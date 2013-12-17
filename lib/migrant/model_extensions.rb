@@ -9,7 +9,7 @@ module Migrant
     end
         
     def create_migrant_schema
-      if self.superclass == ActiveRecord::Base
+      if self.superclass == ActiveRecord::Base || self.superclass.abstract_class
        @schema ||= Schema.new
       else
         @schema ||= InheritedSchema.new(self.superclass.schema)
