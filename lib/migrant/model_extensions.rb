@@ -23,7 +23,7 @@ module Migrant
       create_migrant_schema
       @structure_defined = true
 
-      if self.superclass == ActiveRecord::Base
+      if self.superclass == ActiveRecord::Base || self.superclass.abstract_class
         @schema.define_structure(type, &block)
         @schema.validations.each do |field, validation_options|
           validations = (validation_options.class == Array)? validation_options : [validation_options]
@@ -61,7 +61,7 @@ module Migrant
       raise NoStructureDefined.new("In order to mock() #{self.to_s}, you need to define a Migrant structure block") unless @schema
  
       attribs = {}
-      attribs.merge!(self.superclass.mock_attributes(attributes, recursive)) unless self.superclass == ActiveRecord::Base
+      attribs.merge!(self.superclass.mock_attributes(attributes, recursive)) unless (self.superclass == ActiveRecord::Base  || self.superclass.abstract_class)
       new attribs.merge(mock_attributes(attributes, recursive))
     end
     
